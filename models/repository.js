@@ -155,12 +155,6 @@ class Repository {
                 }
             });
 
-
-
-
-
-
-
             //filter
             if (searchKeys.length != 0)
                 filteredAndSortedObjects = objectsList.filter((ob) => { return this.filter(ob, searchKeys) })
@@ -173,11 +167,19 @@ class Repository {
 
             // pour que sa marche avec compare
             for (const sortKey of sortKeys) {
-                this.sortFields.push({ name: sortKey.key, ascending: sortKey.asc });
-            }
-            const sortingFunc = this.compare.bind(this);
+                    if (Array.isArray(sortKey.key))
+                        this.sortFields.push({ name: sortKey.key[1], ascending: sortKey.asc });
+                    else
+                        this.sortFields.push({ name: sortKey.key, ascending: sortKey.asc });
 
-            filteredAndSortedObjects = filteredAndSortedObjects.sort(sortingFunc);
+            }
+            this.sortFields;
+            
+            if(this.sortFields.length > 0){
+                const sortingFunc = this.compare.bind(this);
+                filteredAndSortedObjects = filteredAndSortedObjects.sort(sortingFunc);
+            }
+            
             return filteredAndSortedObjects;
         }
         return objectsList;
